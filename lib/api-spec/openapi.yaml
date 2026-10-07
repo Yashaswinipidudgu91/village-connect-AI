@@ -3,13 +3,15 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: VillageConnectAI resource discovery API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: resources
+    description: Community resources and opportunity discovery
 paths:
   /healthz:
     get:
@@ -24,6 +26,90 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /resources:
+    get:
+      operationId: listResources
+      tags: [resources]
+      summary: Search community resources
+      parameters:
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: location
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Matching resource listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Resource"
+  /resources/{id}:
+    get:
+      operationId: getResource
+      tags: [resources]
+      summary: Get a resource listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Resource listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resource"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /resources/match:
+    post:
+      operationId: matchResources
+      tags: [resources]
+      summary: Find resources that best fit a resident's need
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResourceMatchInput"
+      responses:
+        "200":
+          description: Ranked resource matches with plain-language reasons
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceMatchResponse"
+  /overview:
+    get:
+      operationId: getOverview
+      tags: [resources]
+      summary: Get directory overview counts
+      responses:
+        "200":
+          description: Summary of the resource directory
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Overview"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +119,97 @@ components:
           type: string
       required:
         - status
+    Resource:
+      type: object
+      required:
+        - id
+        - name
+        - category
+        - description
+        - provider
+        - location
+        - address
+        - contact
+        - website
+        - eligibility
+        - tags
+        - featured
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        provider:
+          type: string
+        location:
+          type: string
+        address:
+          type: string
+        contact:
+          type: string
+        website:
+          type: ["string", "null"]
+        eligibility:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        featured:
+          type: boolean
+        deadline:
+          type: ["string", "null"]
+    ResourceMatchInput:
+      type: object
+      required: [need]
+      properties:
+        need:
+          type: string
+          minLength: 3
+          maxLength: 1000
+        location:
+          type: string
+          maxLength: 120
+    ResourceMatch:
+      type: object
+      required: [resource, score, reason]
+      properties:
+        resource:
+          $ref: "#/components/schemas/Resource"
+        score:
+          type: integer
+        reason:
+          type: string
+    ResourceMatchResponse:
+      type: object
+      required: [matches]
+      properties:
+        matches:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResourceMatch"
+    Overview:
+      type: object
+      required: [resourceCount, categoryCount, featuredCount, categories]
+      properties:
+        resourceCount:
+          type: integer
+        categoryCount:
+          type: integer
+        featuredCount:
+          type: integer
+        categories:
+          type: array
+          items:
+            type: string
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
 

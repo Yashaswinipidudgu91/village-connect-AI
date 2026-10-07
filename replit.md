@@ -1,6 +1,6 @@
-# [Project name]
+# VillageConnectAI
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Digital infrastructure for rural communities, helping residents discover support, livelihoods, trusted local information, and nearby village connections.
 
 ## Run & Operate
 
@@ -22,15 +22,29 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/api-spec/openapi.yaml` — source of truth for the API contract
+- `lib/db/src/schema/resources.ts` — community resource directory schema
+- `artifacts/api-server/src/routes/resources.ts` — resource search and matching API
+- `artifacts/village-connect-ai/src/` — resident-facing web app
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Resource matching currently ranks directory entries using listing text, categories, and tags; no hosted LLM is configured.
+- Saved listings are kept in the resident's browser and do not require an account.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Long-term scope: local services, workers, farmers, businesses, a local marketplace, community information, emergency announcements, government-scheme information, AI-powered assistance, and connections between nearby villages.
+- Product boundary: this is practical village infrastructure, not a generic social-media app or a standalone marketplace.
+- Prioritize everyday jobs: find electricians, plumbers, mechanics, transport, labor, tutors, shops; find farm equipment, labor, seeds, buyers, and scheme information; share useful village notices. Do not add engagement features or commerce complexity without a clear resident need.
+- Current MVP: residents can browse and search resources, filter by category and location, view listing details, get keyword/category/tag matches, and save listings in their browser.
+- Matching is deterministic directory ranking; no AI model is connected yet.
+- The current directory contains sample listings only. Replace them with verified providers and contact details before sharing the app as a live local service directory.
+- Community updates should default to pending and become live only after five unique eligible users verify them. Authors cannot verify their own posts or vote twice; eligibility, counts, and status changes must be enforced by the backend/database.
+- Residents may browse other villages, but creating updates, services, and marketplace listings is limited to their home village unless an administrator grants an exception.
+- AI must not invent government schemes, eligibility, official procedures, legal requirements, medical advice, or financial claims. Government information should rely on verified official sources and clearly state uncertainty.
+- Plan for Telugu, Hindi, and English, older smartphones, low digital literacy, slow or intermittent connections, and accessible controls.
+- The supplied implementation brief specifies Supabase Postgres/Auth/Storage/Edge Functions, phone OTP, and Google Maps APIs. The current MVP still uses Replit's managed PostgreSQL; any provider change needs to be decided before migration.
 
 ## User preferences
 

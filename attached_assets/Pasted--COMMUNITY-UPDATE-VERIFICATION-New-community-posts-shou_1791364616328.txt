@@ -1,0 +1,530 @@
+# COMMUNITY UPDATE VERIFICATION
+
+New community posts should initially be:
+
+pending
+
+A post becomes:
+
+live
+
+after *5 unique eligible users verify it*.
+
+Security requirements:
+
+* Users cannot verify their own post.
+* Users cannot verify twice.
+* Client cannot directly change status.
+* Verification count must be calculated securely.
+* Database/backend controls status transition.
+* Prevent obvious automated abuse/rate manipulation.
+
+Analyze whether the 5-person rule needs improvements and implement a sensible production-grade design.
+
+---
+
+# LOCATION MODEL
+
+Every user has:
+
+home_village_id
+
+Users can:
+
+* View their home village.
+* Temporarily switch to another village.
+* Browse nearby villages.
+
+But users should only be permitted to create:
+
+* Community updates
+* Services
+* Marketplace listings
+
+within their authorized home-village scope unless an administrator explicitly allows otherwise.
+
+---
+
+# AI SAFETY AND ACCURACY
+
+The AI must not blindly hallucinate:
+
+* Government schemes
+* Eligibility
+* Official procedures
+* Legal requirements
+* Medical advice
+* Financial claims
+
+For government information, prefer:
+
+*official government sources / verified knowledge / retrieval architecture*
+
+and clearly indicate uncertainty when necessary.
+
+Do not present fabricated official information.
+
+---
+
+# LOW-BANDWIDTH DESIGN
+
+Treat this as a real rural product.
+
+Optimize for:
+
+* Slow internet
+* Limited data plans
+* Older smartphones
+* Intermittent connectivity
+* Low digital literacy
+
+Consider:
+
+* Image compression
+* Lazy loading
+* Pagination
+* Lightweight UI
+* Minimal unnecessary animations
+* Cached information
+* Retry mechanisms
+* Clear offline/error states
+
+---
+
+# VOICE + LOCAL LANGUAGE
+
+Evaluate and implement where practical:
+
+* Telugu
+* Hindi
+* English
+
+Support:
+
+* Voice input
+* Speech-friendly AI interaction
+* Translation
+* Local-language UI
+
+Do not make language support an afterthought.
+
+Create an architecture that can add languages without rewriting the application.
+
+---
+
+# TECHNICAL STACK
+
+Use:
+
+### Frontend
+
+* React
+* TypeScript
+* Tailwind CSS
+* shadcn/ui
+* Lucide Icons
+
+### Backend
+
+* Supabase
+* PostgreSQL
+* Supabase Auth
+* Supabase Storage
+* Supabase Edge Functions
+* Row-Level Security
+
+### Authentication
+
+* Phone number
+* OTP
+
+### Maps
+
+* Google Maps JavaScript API
+* Google Places API
+* Google Geocoding API
+
+### AI
+
+Use a secure backend/Edge Function to communicate with the selected LLM.
+
+NEVER expose secret AI keys in frontend code.
+
+---
+
+# DATABASE ARCHITECTURE
+
+Design a production-grade PostgreSQL schema.
+
+Minimum tables:
+
+### profiles
+
+* id
+* phone_number
+* full_name
+* avatar_url
+* home_village_id
+* created_at
+* updated_at
+
+### villages
+
+* id
+* name
+* latitude
+* longitude
+* formatted_address
+* place_id
+* created_at
+
+### updates
+
+* id
+* user_id
+* village_id
+* content
+* image_url
+* status
+* created_at
+* updated_at
+
+### verifications
+
+* id
+* update_id
+* user_id
+* created_at
+
+Unique:
+
+(update_id, user_id)
+
+### services
+
+* id
+* user_id
+* village_id
+* category
+* business_name
+* contact_number
+* details
+* availability_status
+* created_at
+* updated_at
+
+### products
+
+* id
+* user_id
+* village_id
+* title
+* price
+* description
+* image_url
+* category
+* created_at
+* updated_at
+
+You may add additional tables where architecturally necessary.
+
+Consider:
+
+* ratings
+* reports
+* notifications
+* events
+* lost_found
+* service_availability
+* AI conversations
+* AI actions
+* moderators
+* audit logs
+* user blocks
+* favorites
+
+Only add tables that genuinely improve the product.
+
+---
+
+# SECURITY
+
+Implement strong Supabase RLS.
+
+Never trust frontend authorization.
+
+Enforce authorization at the database/backend level.
+
+Protect:
+
+* User profiles
+* Village data
+* Posts
+* Verifications
+* Services
+* Products
+* AI requests
+* Uploaded files
+
+Implement:
+
+* RLS
+* secure functions
+* input validation
+* rate limiting where appropriate
+* secure storage policies
+* file validation
+* abuse prevention
+* authorization checks
+* audit logging for privileged actions
+
+---
+
+# UI/UX
+
+Design a mobile-first interface.
+
+Bottom navigation:
+
+1. Home
+2. Directory
+3. AI Assistant
+4. Marketplace
+5. Profile
+
+Home should prominently contain:
+
+* Active village
+* Search
+* "What do you need?"
+* Important updates
+* Categories
+* Nearby services
+* Marketplace highlights
+
+Use:
+
+* Large touch targets
+* Clear typography
+* Simple navigation
+* Familiar icons
+* Cards
+* Bottom sheets
+* Search
+* Filters
+* Toasts
+* Confirmation dialogs
+
+Avoid making the UI look like a generic corporate dashboard.
+
+It should feel:
+
+*local + trustworthy + modern + simple.*
+
+---
+
+# AUTHENTICATION FLOW
+
+Create:
+
+### Step 1
+
+Phone number.
+
+### Step 2
+
+OTP.
+
+### Step 3
+
+Profile.
+
+### Step 4
+
+Village selection.
+
+Village selection must support:
+
+* Search
+* Places suggestions
+* Interactive Google Map
+* Pin
+* Reverse geocoding
+* Village/town name
+* Address confirmation
+
+---
+
+# FEATURE REQUIREMENTS
+
+The generated mega-prompt must fully specify:
+
+## Community
+
+* Feed
+* Create post
+* Images
+* Verification
+* Reports
+* Emergency notices
+* Events
+* Lost & found
+
+## Directory
+
+* Categories
+* Search
+* Filters
+* Service profiles
+* Availability
+* Call
+* WhatsApp
+* Ratings
+* Registration
+
+## Marketplace
+
+* Add product
+* Images
+* Price
+* Search
+* Filters
+* Seller profile
+* Contact
+* Report listing
+* Listing expiration
+
+## AI
+
+* Chat interface
+* Smart search
+* Intent detection
+* Local search
+* Government-scheme assistance
+* Farming assistance
+* Content generation
+* Translation
+* Voice-ready architecture
+
+## Profile
+
+* User details
+* Home village
+* My posts
+* My services
+* My products
+* Saved items
+* Settings
+* Language
+* Privacy
+
+---
+
+# ADMIN / MODERATION
+
+Create a secure admin/moderator architecture.
+
+Moderators should be able to:
+
+* Review reports
+* Remove inappropriate posts
+* Suspend listings
+* Manage emergency notices
+* Review suspicious accounts
+* Manage villages/categories
+* View audit logs
+
+Do not expose admin functionality to normal users.
+
+---
+
+# ERROR / EMPTY / LOADING STATES
+
+Every important screen must have:
+
+* Loading state
+* Empty state
+* Error state
+* Retry
+* Success feedback
+
+Examples:
+
+No services:
+
+> "No services found in this village yet."
+
+No products:
+
+> "No products listed yet."
+
+Network failure:
+
+> "Connection lost. Please try again."
+
+Do not leave blank screens.
+
+---
+
+# ACCESSIBILITY
+
+Design for:
+
+* Older users
+* Low vision
+* First-time smartphone users
+
+Use:
+
+* readable typography
+* sufficient contrast
+* large touch targets
+* clear labels
+* semantic HTML
+* keyboard accessibility
+* screen-reader-friendly components
+
+---
+
+# PERFORMANCE
+
+Implement:
+
+* Pagination
+* Lazy loading
+* Image optimization
+* Query optimization
+* Caching where useful
+* Debounced search
+* Efficient map loading
+* Avoid unnecessary API calls
+
+---
+
+# HACKATHON REQUIREMENTS
+
+The final application must be demonstrable within *3–5 minutes*.
+
+Create a compelling demo journey:
+
+1. User logs in.
+2. Selects village.
+3. Sees village dashboard.
+4. Uses "What do you need?"
+5. Requests a tractor.
+6. AI understands the request.
+7. Local tractor services are found.
+8. User contacts provider.
+9. User opens marketplace.
+10. Finds local produce.
+11. Opens AI Assistant.
+12. Asks about a government scheme.
+13. AI provides a clear explanation with trustworthy-source behavior.
+14. User creates a community notice.
+15. Community verification makes it live.
+
+---
+
+# CRITICAL HACKATHON DIFFERENTIATION
+
+Before cre…

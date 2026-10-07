@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "kMr8s-43awAydslCjFvcs"
+uri = "file://docs/villageconnectai-master-build-prompt.md"
+type = "text"
+title = "VillageConnectAI Master Build Prompt"
+description = "A staged, villager-centered product and implementation brief covering local services, agriculture, community trust, home-village permissions, safety, accessibility, and low-bandwidth use."
+logical_id = "878e5fbc-b40f-443a-89dc-8bfaff78f634"
+content_hash = "sha256:569a989c868f071ce0c49d1ec4a16267d9380249bbf4b510ca355f1efb9b95cf"
+size = 17567
+mtime_ms = 1791364976795
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:1bd692c6-6c96-4fb9-a2c5-2646c969b14e/878e5fbc-b40f-443a-89dc-8bfaff78f634/ae9b98ec-0775-4400-b4f8-dd30d4a48ee1"
+storage_version_token = "1791364997291120"
+content_type = "text/markdown"
