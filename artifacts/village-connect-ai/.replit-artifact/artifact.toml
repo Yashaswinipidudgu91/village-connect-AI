@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "VillageConnectAI"
+description = "A full-stack resource finder that helps rural residents discover relevant local services, opportunities, and support, with guided matching, searchable listings, and the ability to save useful resources."
+version = "1.0.0"
+id = "artifacts/village-connect-ai"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20232
+
+[services.development]
+run = "pnpm --filter @workspace/village-connect-ai run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/village-connect-ai", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/village-connect-ai/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20232"
+BASE_PATH = "/"
